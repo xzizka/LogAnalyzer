@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}
+LogAnalyzer for Quest - Home
+{% endblock %}
+
+{% block content %}
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>LogAnalyzer for Quest</h1>
+        <p>This is a analyzer of logs. Currently supports Toad for Oracle only</p>
+
+        <h2>Recently added</h2>
+        {% if new_sbs.count() > 0 %}
+        <ul>
+            {% with supportbundles=new_sbs %}
+                {% include "sb_list.html" %}
+            {% endwith %}
+        </ul>
+        {% else %}
+            No SB yet.
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Base information</h2>
+          <p>LogAnalyzer provides basic information about how the application is installed, what version of operating system is used, information about running processes and so on... </p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+          <h2>Errors</h2>
+          <p>Filtering errors from the support bundle and provide link to the SRs which had the same error in it's SB. </p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+       </div>
+        <div class="col-md-4">
+          <h2>Solutions</h2>
+          <p>Recommend KB with possible solutions of the problem.</p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+      </div>
+
+    </div>
+{% endblock %}

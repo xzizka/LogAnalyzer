@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% from "form_macros.html" import render_field %}
+
+{% block title %}
+LogAnalyzer -- {{ title }}
+{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/select2.min.css') }}">
+{% endblock %}
+
+{% block content %}
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-info">
+                        <strong>Info!</strong> {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+          {% endwith %}
+
+        <div class="jumbotron">
+            <div class="container">
+                <form action="" method="post" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+
+                    {{ render_field(form.service_request) }}
+                    {% if request.path == "/upload" %}
+                        {{ render_field(form.input_file) }}
+                    {% endif %}
+                    {{ render_field(form.comment) }}
+                    {{ render_field(form.tags, id="tags") }}
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/vendor/select2.full.min.js') }}"></script>
+<script>
+         var _tags = {{ all_tags()|map(attribute='name')|list|tojson|safe }};
+        $('#tags').select2({
+                    tags: true,
+                    tokenSeparators: [','],
+                    multiple: true,
+                    data: _tags,
+                    newOption: true
+                   }
+            });
+</script>
+{% endblock %}

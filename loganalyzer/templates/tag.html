@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}
+LogAnalyzer - Tag {{ tag }}
+{% endblock %}
+
+{% block content %}
+    <h1>Support Bundles tagged {{ tag }}</h1>
+        {% if tag.supportbundles.count() > 0 %}
+            {% with supportbundles=tag.supportbundles %}
+                    {% include "sb_list.html" %}
+            {% endwith %}
+        {% else %}
+            There is nothing to see.
+        {% endif %}
+{% endblock %}

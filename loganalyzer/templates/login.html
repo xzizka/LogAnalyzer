@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% from "form_macros.html" import render_field %}
+
+{% block title %}
+LogAnalyzer - Login
+{% endblock %}
+
+{% block content %}
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="text-center">Quest LogAnalyzer - Login</h1>
+        </div>
+         <div class="modal-body">
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-warning">
+                        <strong>{{ message }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+          {% endwith %}
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        {{ render_field(form.username, size=50) }}
+        {{ render_field(form.password, size=50) }}
+        {{ render_field(form.remember_me) }}
+        <input id="submit" name="submit" size="50" type="submit" value="Submit">
+    </form>
+         </div>
+    </div>
+ </div>
+
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}

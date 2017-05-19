@@ -1,0 +1,14 @@
+        {% if current_user == supportbundle.user and not nolinks %}
+            <a href="{{ url_for('edit', sb_id=supportbundle.id) }}">{{ supportbundle.service_request }}</a>
+            - (<a href="{{ url_for('user', username=supportbundle.user.username) }}">{{ supportbundle.user.username }}</a>,
+            <a href="{{ url_for('delete_sb', sb_id=supportbundle.id) }}">delete</a>
+        {% else %}
+            {{ supportbundle.service_request }}
+            - ({{ supportbundle.user.username }}
+        {% endif %}
+        , {{ moment(supportbundle.datetime).fromNow() }}) :
+        {% if supportbundle.tags %}
+            {% for t in supportbundle._tags %}
+                <a href="{{ url_for('tag', name=t) }}">{{ t }}</a>&nbsp;
+            {% endfor %}
+        {% endif %}
