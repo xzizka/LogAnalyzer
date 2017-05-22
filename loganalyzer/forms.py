@@ -1,17 +1,16 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileRequired
 from flask import request
-from wtforms.fields import IntegerField, TextAreaField, FileField, PasswordField, BooleanField, StringField
+from wtforms.fields import IntegerField, TextAreaField, FileField, PasswordField, BooleanField, StringField, SelectMultipleField
 from wtforms.validators import DataRequired, Optional, NumberRange, Length, Regexp, EqualTo, Email, ValidationError
 
-from loganalyzer.models import User
+from loganalyzer.models import User, Tag
 
 
 class SBForm_base(FlaskForm):
     service_request=IntegerField('Service Request number', validators=[DataRequired(message='You must input a valid number'),NumberRange(min=0,message='Input is not a valid number.')])
     comment=TextAreaField('Add comments',validators=[Optional()])
-    tags = StringField('Tags', validators=[Regexp(r'^[a-z,A-Z0-9, ]*$',
-                                                  message='Tags can only contains letters and numbers')])
+    tags = StringField('Tags', validators=[Regexp(r'^[a-z,A-Z0-9, ]*$', message='Tags can only contains letters and numbers')])
 
     def validate(self):
 

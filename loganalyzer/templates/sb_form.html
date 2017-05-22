@@ -7,7 +7,7 @@ LogAnalyzer -- {{ title }}
 
 {% block styles %}
 {{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/select2.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/selectize.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -39,16 +39,24 @@ LogAnalyzer -- {{ title }}
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/vendor/select2.full.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vendor/selectize.min.js') }}"></script>
 <script>
-         var _tags = {{ all_tags()|map(attribute='name')|list|tojson|safe }};
-        $('#tags').select2({
-                    tags: true,
-                    tokenSeparators: [','],
-                    multiple: true,
-                    data: _tags,
-                    newOption: true
-                   }
-            });
+        var _tags = [
+        {% for tag in all_tags() %}
+            {value: "{{ tag.name }}", text: "{{ tag.name }}"},
+        {% endfor %}
+        ];
+        $('#tags').selectize({
+                    plugins: ['remove_button'],
+                    delimiter: ',',
+                    persist: false,
+                    options: _tags,
+                    create: function(input) {
+                        return {
+                            value: input,
+                            text: input
+                        }
+                    }
+        });
 </script>
 {% endblock %}
