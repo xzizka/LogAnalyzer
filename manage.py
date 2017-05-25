@@ -1,15 +1,20 @@
 #! /usr/bin/env python3
-from loganalyzer import app, db
-from loganalyzer.models import User, SupportBundle, Tag
-from flask_script import Manager, prompt_bool
+import os
+
+from loganalyzer import create_app, db
+from flask_script import Manager #, prompt_bool
 from flask_migrate import Migrate, MigrateCommand
+#from loganalyzer.models import User, SupportBundle, Tag
 from datetime import datetime
 
+app = create_app(os.getenv('LOGANALYZER_ENV') or 'dev')
 manager = Manager(app)
+
 migrate = Migrate(app, db)
 
 manager.add_command('db', MigrateCommand)
 
+'''
 @manager.command
 def insert_data():
     xzizka = User(username='xzizka',password='Passw0rd',name='Ondrej',surname='Zizka',email='ondrej.zizka@quest.com')
@@ -33,6 +38,7 @@ def dbdrop():
     if prompt_bool("Do you want to delete all tables?"):
         db.drop_all()
         print('Tables deleted')
+'''
 
 if __name__ == '__main__':
     manager.run()

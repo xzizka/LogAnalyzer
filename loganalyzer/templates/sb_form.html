@@ -2,7 +2,7 @@
 {% from "form_macros.html" import render_field %}
 
 {% block title %}
-LogAnalyzer -- {{ title }}
+LogAnalyzer for Quest - Upload
 {% endblock %}
 
 {% block styles %}
@@ -11,15 +11,6 @@ LogAnalyzer -- {{ title }}
 {% endblock %}
 
 {% block content %}
-          {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-info">
-                        <strong>Info!</strong> {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-          {% endwith %}
 
         <div class="jumbotron">
             <div class="container">
@@ -27,7 +18,7 @@ LogAnalyzer -- {{ title }}
                     {{ form.hidden_tag() }}
 
                     {{ render_field(form.service_request) }}
-                    {% if request.path == "/upload" %}
+                    {% if request.path == "/supportbundles/upload" %}
                         {{ render_field(form.input_file) }}
                     {% endif %}
                     {{ render_field(form.comment) }}

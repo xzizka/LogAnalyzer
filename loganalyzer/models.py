@@ -46,7 +46,7 @@ class SupportBundle(db.Model):
     path = db.Column(db.Text, nullable=True)
     datetime = db.Column(db.DateTime,default=datetime.utcnow)
     user_id=db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    _tags = db.relationship('Tag', secondary=tags, backref=db.backref('supportbundles', lazy='dynamic'))
+    _tags = db.relationship('Tag', secondary=tags, lazy='joined', backref=db.backref('supportbundles', lazy='dynamic'))
 
     @staticmethod
     def newest(num):
