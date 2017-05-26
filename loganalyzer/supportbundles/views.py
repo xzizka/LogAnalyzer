@@ -20,7 +20,7 @@ def upload():
         db.session.add(sb)
         db.session.commit()
         flash("Stored SR '{}', comment: '{}', filename: {}".format(service_request, comment, input_file.filename))
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
     return render_template('sb_form.html', form=form)
 
 
