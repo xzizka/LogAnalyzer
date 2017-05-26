@@ -46,7 +46,7 @@
           <ul class="nav navbar-nav">
               <li {% if request.path == "/" %} class="active" {% endif %}><a href="{{ url_for('main.index') }}">Home</a></li>
               <li {% if request.path == "/supportbundles/upload" %} class="active" {% endif %}><a href="{{ url_for('supportbundles.upload') }}">Upload</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
           </ul>
         {% if current_user.is_authenticated %}
           <ul class="nav navbar-nav navbar-right">
@@ -64,8 +64,8 @@
     </nav>
 
         <!-- Flash messages - start -->
-                  {% with messages = get_flashed_messages() %}
-            {% if messages %}
+        {% with messages = get_flashed_messages() %}
+            {% if messages and not request.path == "/auth/login" %}
                 {% for message in messages %}
                     <div class="alert alert-info">
                         <strong>Info!</strong> {{ message }}
@@ -83,12 +83,16 @@
 
         <!-- Content - end -->
 
-      <footer>
-          <center>Tags:
-          {% for t in all_tags() %}
-                - <a href="{{ url_for('supportbundles.tag', name=t) }}">{{ t }}</a> -
-          {% endfor %}
-          </center>
+      <footer class="footer">
+        {% with tags = all_tags() %}
+            {% if tags %}
+                <center>Tags:
+                {% for t in tags %}
+                    - <a href="{{ url_for('supportbundles.tag', name=t) }}">{{ t }}</a> -
+                {% endfor %}
+                </center>
+            {% endif %}
+        {% endwith %}
           <hr>
         <p align="center">&copy; Quest 2017 - Ondrej Zizka</p>
       </footer>
