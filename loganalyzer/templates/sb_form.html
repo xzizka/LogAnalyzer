@@ -11,22 +11,36 @@ LogAnalyzer for Quest - Upload
 {% endblock %}
 
 {% block content %}
-
-        <div class="jumbotron">
-            <div class="container">
                 <form action="" method="post" enctype="multipart/form-data">
-                    {{ form.hidden_tag() }}
 
-                    {{ render_field(form.service_request) }}
+                    <div class="row">
+                         <div class="col-sm-12"><div style="height: 20px"></div></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="col-sm-3"></div>
+                                <div class="col-sm-6">
+
+                    {{ form.hidden_tag() }}
+                    <legend>Support Bundle upload</legend>
+                    {{ render_field(form.service_request, size=50, class="form-control input-md", placeholder="Service Request number") }}
                     {% if request.path == "/supportbundles/upload" %}
-                        {{ render_field(form.input_file) }}
+                        {{ render_field(form.input_file, size=50, class_="btn btn-default btn-file", placeholder="Support Bundle ZIP file") }}
                     {% endif %}
-                    {{ render_field(form.comment) }}
-                    {{ render_field(form.tags, id="tags") }}
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
-        </div>
+                    {{ render_field(form.comment, size=50, class="form-control input-md", placeholder="Comment") }}
+                    {{ render_field(form.tags, id="tags", size=50, class="form-control input-md", placeholder="Tags") }}
+                    <div class="form-group">
+                        <div class="col-2 control-label"></div>
+                        <div class="col-10">
+                            <button id="button1id" name="button1id" class="btn btn-primary">Send</button>
+                        </div>
+                    </div>
+                                </div>
+                            <div class="col-sm-3"></div>
+                        </div>
+                    </div>
+                <form>
+
 {% endblock %}
 
 {% block scripts %}

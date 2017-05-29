@@ -66,9 +66,12 @@
         <!-- Flash messages - start -->
         {% with messages = get_flashed_messages() %}
             {% if messages and not request.path == "/auth/login" %}
+            <div class="row">
+        <div class="col-sm-12"><div style="height: 20px"></div></div>
+    </div>
                 {% for message in messages %}
-                    <div class="alert alert-info">
-                        <strong>Info!</strong> {{ message }}
+                    <div class="alert alert-info text-center">
+                        <strong>Info:</strong> {{ message }}
                     </div>
                 {% endfor %}
             {% endif %}

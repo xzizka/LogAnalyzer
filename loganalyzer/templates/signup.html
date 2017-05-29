@@ -1,100 +1,48 @@
 {% extends "base.html" %}
-{% from "form_macros.html" import render_field %}
+{% from "form_macros.html" import render_field_forms %}
 
 {% block title %}
 LogAnalyzer - Signup
 {% endblock %}
 
 {% block content %}
-        <table>
-
-            {{ render_field(form.email, size=50) }}
-            {{ render_field(form.password, size=50) }}
-            {{ render_field(form.password2, size=50) }}
-            <tr>
-                <td></td><td><button type="submit">Submit</button></td>
-            </tr>
-        </table>
 <form class="form-horizontal" action="" method="post">
         {{ form.hidden_tag() }}
+    <div class="row">
+        <div class="col-sm-12"><div style="height: 20px"></div></div>
+    </div>
+    <div class="row">
+    <div class="col-sm-12">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
 
-<fieldset>
-
-<!-- Form Name -->
+            <!-- Form Name -->
 <legend>Registration</legend>
 
 <!-- Text input-->
-<div class="form-group">
-    <div class="col-md-4">
-        {{ render_field(form.username, size=50, class="form-control input-md", placeholder="E-mail") }}
-  </div>
-</div>
-
+        {{ render_field_forms(form.username, size=30, class="form-control input-md", placeholder="Username") }}
 
 <!-- Text input-->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="textinput">E-mail</label>
-  <div class="col-md-4">
-  <input id="textinput" name="textinput" type="text" placeholder="E-mail" class="form-control input-md">
-
-  </div>
-</div>
+        {{ render_field_forms(form.email, size=30, class="form-control input-md", placeholder="E-mail") }}
 
 <!-- Text input-->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="textinput">Name</label>
-  <div class="col-md-4">
-  <input id="textinput" name="textinput" type="text" placeholder="Name" class="form-control input-md">
-
-  </div>
-</div>
+        {{ render_field_forms(form.password, size=50, class="form-control input-md", placeholder="Password") }}
 
 <!-- Text input-->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="textinput">Sname</label>
-  <div class="col-md-4">
-  <input id="textinput" name="textinput" type="text" placeholder="Sname" class="form-control input-md">
-
-  </div>
-</div>
-
-<!-- Select Basic -->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="year">Select Year</label>
-  <div class="col-md-4">
-    <select id="year" name="year" class="form-control">
-      <option value="1">1</option>
-    </select>
-  </div>
-</div>
-
-<!-- Password input-->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="passwordinput">Renter Password </label>
-  <div class="col-md-4">
-    <input id="passwordinput" name="passwordinput" type="password" placeholder="" class="form-control input-md">
-
-  </div>
-</div>
-
-<!-- Password input-->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="passwordinput">Password</label>
-  <div class="col-md-4">
-    <input id="passwordinput" name="passwordinput" type="password" placeholder="" class="form-control input-md" required="">
-
-  </div>
-</div>
+        {{ render_field_forms(form.password2, size=50, class="form-control input-md", placeholder="Confirm password") }}
 
 <!-- Button (Double) -->
 <div class="form-group">
-  <label class="col-md-4 control-label" for="button1id">Select to register</label>
+  <label class="col-md-4 control-label" for="button1id"></label>
   <div class="col-md-8">
-    <button id="button1id" name="button1id" class="btn btn-success">Register</button>
-    <button id="button2id" name="button2id" class="btn btn-default">Remove</button>
+    <button id="button1id" name="button1id" class="btn btn-primary">Register</button>
   </div>
 </div>
 
-</fieldset>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+
 </form>
 {% endblock %}

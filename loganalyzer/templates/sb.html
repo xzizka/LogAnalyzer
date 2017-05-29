@@ -1,14 +1,24 @@
+    <tr>
         {% if current_user == supportbundle.user and not nolinks %}
-            <a href="{{ url_for('supportbundles.edit', sb_id=supportbundle.id) }}">{{ supportbundle.service_request }}</a>
-            - (<a href="{{ url_for('supportbundles.user', username=supportbundle.user.username) }}">{{ supportbundle.user.username }}</a>,
-            <a href="{{ url_for('supportbundles.delete_sb', sb_id=supportbundle.id) }}">delete</a>
+        <td><a href="{{ url_for('supportbundles.edit', sb_id=supportbundle.id) }}">{{ supportbundle.service_request }}</a></td>
+        <td><a href="{{ url_for('supportbundles.user', username=supportbundle.user.username) }}">{{ supportbundle.user.username }}</a></td>
         {% else %}
-            {{ supportbundle.service_request }}
-            - ({{ supportbundle.user.username }}
+        <td>{{ supportbundle.service_request }}</td>
+        <td>{{ supportbundle.user.username }}</td>
         {% endif %}
-        , {{ moment(supportbundle.datetime).fromNow() }}) :
+        <td> {{ moment(supportbundle.datetime).fromNow() }} </td>
         {% if supportbundle.tags %}
-            {% for t in supportbundle._tags %}
-                <a href="{{ url_for('supportbundles.tag', name=t.name) }}">{{ t }}</a>&nbsp;
-            {% endfor %}
+            <td>
+                {% for t in supportbundle._tags %}
+                    <a href="{{ url_for('supportbundles.tag', name=t.name) }}">{{ t }}</a>&nbsp;
+                {% endfor %}
+            </td>
         {% endif %}
+        {% if current_user == supportbundle.user and not nolinks %}
+            <td>
+                <a href="{{ url_for('supportbundles.delete_sb', sb_id=supportbundle.id) }}">delete</a>
+            </td>
+        {% else %}
+        <td></td>
+        {% endif %}
+    </tr>

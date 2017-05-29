@@ -8,11 +8,9 @@ LogAnalyzer for Quest -- Support Bundles for user {{ user.username }}
              <h1>Support Bundles for {{ user.username }}</h1>
 
             {% if user.supportbundle.count() > 0 %}
-                 <ul>
                     {% with supportbundles=user.supportbundle %}
                         {% include "sb_list.html" %}
                     {% endwith %}
-                 </ul>
             {% else %}
                 No SB yet.
             {% endif %}

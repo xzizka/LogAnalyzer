@@ -1,7 +1,14 @@
-<ul>
+<table class="table table-striped">
+    <tr bgcolor="grey">
+        <th>Service Request number</th>
+        <th>Username</th>
+        <th>Created</th>
+        <th>Tags</th>
+        <th></th>
+    </tr>
     {% for supportbundle in supportbundles %}
-    <li>
+
         {% include "sb.html" %}
-    </li>
+
     {% endfor %}
-</ul>
+</table>

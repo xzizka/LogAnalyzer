@@ -6,6 +6,7 @@ class Config:
 class DevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'postgresql+pypostgresql://xzizka:Passw0rd@10.11.78.140:5432/loganalyzer_dev'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    DEBUG_TB_INTERCEPT_REDIRECTS = False
     DEBUG = True
 
 

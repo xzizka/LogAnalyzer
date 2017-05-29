@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, Optional, NumberRange, Regexp
 
 class SBForm_base(FlaskForm):
     service_request=IntegerField('Service Request number', validators=[DataRequired(message='You must input a valid number'),NumberRange(min=0,message='Input is not a valid number.')])
-    comment=TextAreaField('Add comments',validators=[Optional()])
+    comment=TextAreaField('Comments',validators=[Optional()])
     tags = StringField('Tags', validators=[Regexp(r'^[a-z,A-Z0-9, ]*$', message='Tags can only contains letters and numbers')])
 
     def validate(self):
@@ -25,5 +25,5 @@ class SBForm_base(FlaskForm):
 
 
 class SBForm_upload(SBForm_base):
-    input_file=FileField('Select Support Bundle',validators=[FileRequired(message='The Support Bundle is mandatory')])
+    input_file=FileField('Support Bundle file',validators=[FileRequired(message='The Support Bundle is mandatory')])
 
