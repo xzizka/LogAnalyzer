@@ -5,7 +5,14 @@ LogAnalyzer for Quest -- Support Bundles for user {{ user.username }}
 {%  endblock %}
 
 {% block content %}
-             <h1>Support Bundles for {{ user.username }}</h1>
+<div class="row">
+                         <div class="col-sm-12"><div style="height: 20px"></div></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="col-sm-1"></div>
+                                <div class="col-sm-10">
+             <legend>Support Bundles for {{ user.username }}</legend>
 
             {% if user.supportbundle.count() > 0 %}
                     {% with supportbundles=user.supportbundle %}
@@ -14,4 +21,8 @@ LogAnalyzer for Quest -- Support Bundles for user {{ user.username }}
             {% else %}
                 No SB yet.
             {% endif %}
+                               </div>
+                            <div class="col-sm-3"></div>
+                        </div>
+                    </div>
 {% endblock %}
