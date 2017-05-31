@@ -47,6 +47,7 @@
               <li {% if request.path == "/" %} class="active" {% endif %}><a href="{{ url_for('main.index') }}">Home</a></li>
               <li {% if request.path == "/supportbundles/upload" %} class="active" {% endif %}><a href="{{ url_for('supportbundles.upload') }}">Upload</a></li>
               <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
+              <li><a href="{{ url_for('supportbundles.search') }}">Search</a></li>
           </ul>
         {% if current_user.is_authenticated %}
           <ul class="nav navbar-nav navbar-right">

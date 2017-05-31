@@ -27,3 +27,8 @@ class SBForm_base(FlaskForm):
 class SBForm_upload(SBForm_base):
     input_file=FileField('Support Bundle file',validators=[FileRequired(message='The Support Bundle is mandatory')])
 
+
+class SBSearch(FlaskForm):
+    service_request = IntegerField('Service Request number',
+                                   validators=[DataRequired(message='You must input a valid number'),
+                                               NumberRange(min=0, message='Input is not a valid number.')])

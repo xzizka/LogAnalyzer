@@ -2,9 +2,10 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
 
 from . import supportbundles
-from .forms import SBForm_base, SBForm_upload
+from .forms import SBForm_base, SBForm_upload, SBSearch
 from .. import db
 from ..models import User, SupportBundle, Tag
+
 
 @supportbundles.route('/upload', methods=['GET','POST'])
 @login_required
@@ -38,6 +39,7 @@ def edit(sb_id):
         return redirect(url_for('.user', username=current_user.username))
     return render_template('sb_form.html', form=form, title="Edit Support Bundle")
 
+
 @supportbundles.route('/delete/<int:sb_id>', methods=['POST','GET'])
 @login_required
 def delete_sb(sb_id):
@@ -53,10 +55,21 @@ def delete_sb(sb_id):
         flash("Please confirm deleting of this Support Bundle")
     return render_template('confirm_delete.html', supportbundle=sb, nolinks=True)
 
+
+@supportbundles.route('/search/<int:sb_id>')
+@supportbundles.route('/search/', defaults={ 'sb_id': None }, methods=['POST','GET'])
+def search(sb_id):
+    form = SBSearch()
+    if form.validate_on_submit() or request.method == "GET":
+        form.service_request.data = sb_id
+    sbs = SupportBundle.query.filter_by(service_request = form.service_request.data)
+    print(form.service_request.data)
+    return render_template('sb_search.html', form=form, sbs=sbs)
+
+
 @supportbundles.route('/user/<username>')
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    #print(user.supportbundle)
     return render_template('user.html', user=user)
 
 
