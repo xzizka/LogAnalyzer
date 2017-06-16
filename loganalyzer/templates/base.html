@@ -94,7 +94,7 @@
         {% endblock %}
 
         <!-- Content - end -->
-
+     {% block footer %}
       <footer class="footer">
         {% with tags = all_tags() %}
             {% if tags %}
@@ -108,6 +108,7 @@
           <hr>
         <p align="center">&copy; Quest 2017 - Ondrej Zizka</p>
       </footer>
+    {% endblock %}
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="{{ url_for('static', filename='js/vendor/jquery-1.11.2.min.js') }}"><\/script>')</script>
 

@@ -1,6 +1,6 @@
     <tr>
         {% if current_user == supportbundle.user and not nolinks %}
-        <td><a href="{{ url_for('supportbundles.edit', sb_id=supportbundle.id) }}">{{ supportbundle.service_request }}</a></td>
+        <td><a href="{{ url_for('supportbundles.display', sb_id=supportbundle.id) }}">{{ supportbundle.service_request }}</a></td>
         <td><a href="{{ url_for('supportbundles.user', username=supportbundle.user.username) }}">{{ supportbundle.user.username }}</a></td>
         {% else %}
         <td>{{ supportbundle.service_request }}</td>
@@ -16,6 +16,7 @@
         {% endif %}
         {% if current_user == supportbundle.user and not nolinks %}
             <td>
+                <a href="{{ url_for('supportbundles.edit', sb_id=supportbundle.id) }}">edit</a> -
                 <a href="{{ url_for('supportbundles.delete_sb', sb_id=supportbundle.id) }}">delete</a>
             </td>
         {% else %}

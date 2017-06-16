@@ -18,7 +18,6 @@ toolbar = DebugToolbarExtension()
 #for dislaying of time
 moment = Moment()
 
-
 def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config_by_name[config_name])
@@ -35,5 +34,8 @@ def create_app(config_name):
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint, url_prefix='/')
+
+    from .analyzer import analyzer as analyzer_blueprint
+    app.register_blueprint(analyzer_blueprint)
 
     return app

@@ -5,23 +5,32 @@ from . import supportbundles
 from .forms import SBForm_base, SBForm_upload, SBSearch
 from .. import db
 from ..models import User, SupportBundle, Tag
+from ..analyzer.views import oracleSB
 
+from pprint import pprint
 
 @supportbundles.route('/upload', methods=['GET','POST'])
 @login_required
 def upload():
     form = SBForm_upload()
     if form.validate_on_submit():
+        files = {}
         service_request = form.service_request.data
         input_file = form.input_file.data
         comment = form.comment.data
         tags = form.tags.data
+        files = oracleSB(form.input_file.data)
+        '''pprint(input_file.__dict__)
+        
         sb = SupportBundle(service_request=service_request,filename=input_file.filename,comment=comment,
                            path='/tmp/{}'.format(input_file.filename), user=current_user, tags=tags)
         db.session.add(sb)
         db.session.commit()
         flash("Stored SR '{}', comment: '{}', filename: {}".format(service_request, comment, input_file.filename))
-        return redirect(url_for('main.index'))
+        '''
+        #return redirect(url_for('main.index'))
+
+        return render_template('files_display.html', files=files, sr=service_request)
     return render_template('sb_form.html', form=form)
 
 
@@ -63,8 +72,13 @@ def search(sb_id):
     if form.validate_on_submit() or request.method == "GET":
         form.service_request.data = sb_id
     sbs = SupportBundle.query.filter_by(service_request = form.service_request.data)
-    print(form.service_request.data)
     return render_template('sb_search.html', form=form, sbs=sbs)
+
+
+@supportbundles.route('/display/<int:sb_id>', methods=['GET','POST'])
+@login_required
+def display(sb_id):
+    return render_template('sb_display.html')
 
 
 @supportbundles.route('/user/<username>')
