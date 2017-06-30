@@ -94,12 +94,57 @@ def process_SB(file):
                     structure[subsections[0]][subsections[1]][subsections[2]].update(OrderedDict({ str(text[2]).strip() : OrderedDict() }))
                 else:
                    structure[subsections[0]][subsections[1]][subsections[2]].append( str(text[2]).strip() )
-                   if len(subsections) > 3:
-                       subsections[3] = str(text[2]).strip()
-                   else:
-                       subsections.append(str(text[2]).strip())
+                if len(subsections) > 3:
+                   subsections[3] = str(text[2]).strip()
+                else:
+                    subsections.append(str(text[2]).strip())
+            elif length == 4:
+                if re.match('^VCS Provider: .+$',line.strip()):
+                    splitted = line.split(':')
+                    structure[subsections[0]][subsections[1]][subsections[2]][subsections[3]].update(OrderedDict({'VCS Provider': str(splitted[1]).strip()}))
+                elif subsections[3] == 'Team Settings':
+                    splitted = line.split(':')
+                    if str(splitted[0]).strip() == 'Integrate with Version Control':
+                        structure[subsections[0]][subsections[1]][subsections[2]][subsections[3]].update(OrderedDict({str(splitted[0]).strip(): OrderedDict()}))
+                    else:
+                        structure[subsections[0]][subsections[1]][subsections[2]][subsections[3]].update(OrderedDict({ str(splitted[0]).strip() : str(splitted[1]).strip()}))
+                else:
+                    structure[subsections[0]][subsections[1]][subsections[2]][subsections[3]].update(OrderedDict({str(text[3]).strip(): OrderedDict()}))
+                    if len(subsections) > 4:
+                        subsections[4] = str(text[3]).strip()
+                    else:
+                        subsections.append(str(text[3]).strip())
+            elif length == 5:
+                if re.match('^VCS Project: .+$',line.strip()):
+                    splitted = line.split(':')
+                    structure[subsections[0]][subsections[1]][subsections[2]][subsections[3]][subsections[4]].update(OrderedDict({'VCS Project': OrderedDict({'Name': str(splitted[1]).strip()}) }))
+                    if len(subsections) > 5:
+                        subsections[5] = 'VCS Project'
+                    else:
+                        subsections.append('VCS Project')
+                    continue
+                elif re.match('^VCS Provider: .+$',line.strip()):
+                    splitted = line.split(':')
+                    #structure[subsections[0]][subsections[1]][subsections[2]][subsections[3]][subsections[4]].update(OrderedDict({str(splitted[0]).strip(): str(splitted[1]).strip()  }))
+                else:
+                    structure[subsections[0]][subsections[1]][subsections[2]][subsections[3]][subsections[4]].update(OrderedDict({str(text[4]).strip(): OrderedDict()}))
 
-    pprint(json.dumps(structure))
+                    if len(subsections) > 5:
+                        subsections[5] = str(text[4]).strip()
+                    else:
+                        subsections.append(str(text[4]).strip())
+            elif length == 6:
+                splitted = line.split(':')
+                structure[subsections[0]][subsections[1]][subsections[2]][subsections[3]][subsections[4]][subsections[5]].update(OrderedDict({str(splitted[0]).strip(): OrderedDict()}))
+                if len(subsections) > 6:
+                    subsections[6] = str(splitted[0]).strip()
+                else:
+                    subsections.append(str(splitted[0]).strip())
+            elif length ==7:
+                splitted = line.split(':')
+                structure[subsections[0]][subsections[1]][subsections[2]][subsections[3]][subsections[4]][subsections[5]][subsections[6]].update(OrderedDict({str(splitted[0]).strip(): str(splitted[1]).strip() }))
+
+    pprint(structure['TEAM CODING']['C##QUESTCT@10.1.152.63:1521/ORCL'])
 
     '''
     This procedure parses the TFO SB
