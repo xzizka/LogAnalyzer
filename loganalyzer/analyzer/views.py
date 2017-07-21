@@ -25,6 +25,14 @@ def process_SB(file):
     structure = OrderedDict()
     subsections = []
     splitted = []
+    client_number = 0
+    connection_number = 0
+    active_session = False
+    path = False
+    path_part = 0
+    client_name = ''
+    client_path = 0
+
     for line in file.splitlines():
         if re.match(r'[\*]+$',line) or re.match(r'\ufeff[\*]+$',line) or re.match(r'^$',line):
             continue # removes lines full of stars (delimiters) and empty lines
@@ -143,81 +151,69 @@ def process_SB(file):
             elif length ==7:
                 splitted = line.split(':')
                 structure[subsections[0]][subsections[1]][subsections[2]][subsections[3]][subsections[4]][subsections[5]][subsections[6]].update(OrderedDict({str(splitted[0]).strip(): str(splitted[1]).strip() }))
-
-    pprint(structure['TEAM CODING']['C##QUESTCT@10.1.152.63:1521/ORCL'])
-
-    '''
-    This procedure parses the TFO SB
-    
-    structure = {} # structure with reworked data
-    next_step = 0 # variable used for forwarding in the process tree
-    level = 0 # level in structure
-    previous_level= 0 # previous level in the structure
-    subsections = []
-    for line in file.splitlines():
-        if re.match(r'[\*]+$',line) or re.match(r'\ufeff[\*]+$',line) or re.match(r'^$',line):
-            continue # removes lines full of stars (delimiters) and empty lines
-        elif re.match(r'^\*\*\s.+$',line):
-            subsections = []
-            if re.match(r'^\*\* FORMATTER OPTIONS:(.|\s)+',line):
-                structure['FORMATTER OPTIONS'] = {}
-                structure['FORMATTER OPTIONS']['Path'] = ''.join(line.split(':')[1:]).strip()
-                subsections.append("FORMATTER OPTIONS")
-            else:
-                subsections.append(line[2:].strip())
-                structure[subsections[0]] = {}
-            next_step = 0
-            continue
-        elif re.match(r'^Support Bundle for Toad for Oracle .+$',line):
-            structure[subsections[0]]['Toad for Oracle version'] =  re.compile(r'\d+.\d+.\d+.\d+$').search(line).group().strip()
-            next_step = 1
-            continue
-        elif next_step == 1:
-            structure[subsections[0]]['Comment'] = line
-            next_step = 2
-            continue
-        elif next_step == 2:
+        elif subsections[0]=='MANAGED ITEMS':
+            structure[subsections[0]].update(OrderedDict({'Value': line}))
+        elif subsections[0]=='ORACLE CLIENT INFORMATION':
             splitted = line.split(':')
-            structure[subsections[0]][splitted[0].strip()] = splitted[1].split(',')[0].strip()
-            structure[subsections[0]][splitted[1].split(',')[1].strip()] = splitted[2].strip()
-            next_step=3
-            continue
-        elif next_step == 3:
+            if splitted[0].strip() == 'Oracle Client Version':
+                client_number = client_number + 1
+                structure[subsections[0]].update(OrderedDict({'Oracle Client ('+ str(client_number) +')': OrderedDict()}))
+            structure[subsections[0]]['Oracle Client ('+ str(client_number) +')'].update(OrderedDict({str(splitted[0]): ':'.join(splitted[1:]).strip()}))
+        elif subsections[0]=='ORACLE SERVER INFORMATION':
             splitted = line.split(':')
-            structure[subsections[0]][splitted[0].strip()] = ''.join(splitted[1:])
-            continue
-        elif subsections[0] == "TEAM CODING":
-            text = line.split('\t')
-            length = len(text)
-            if next_step == 0 and re.match(r'^Connection: .+$', line):
-                splitted = line.split(' ')
-                structure[subsections[0]]['string'] = splitted[1].strip()
-                next_step = 4
-                level = 1
-                continue
-            elif next_step == 4:
-                temp = structure
-                i = 0
-                while i < level:
-                    i = i + 1
-                    temp = temp[subsection[i]]
-
-                if level > previous_level:
-                    pass
-                    previous_level = level
-                elif level == previous_level:
-                    previous_level = level
+            if re.match('^Connection [0-9]+$',splitted[0].strip()):
+                connection_number = connection_number + 1
+                structure[subsections[0]].update(OrderedDict({'Connection ('+ str(connection_number) +')': OrderedDict()}))
+                if re.match('.+ Active Session .+', line):
+                    active_session = True
                 else:
-                    temp.update({ : })
-                    previous_level = level
-                    pass
-                if re.match(r'\t\t\t\t\t\t.+$', line):
-                    #structure[subsections[0]][subsections[1]][subsections[2]][subsections[3]][subsections[4]][subsections[5]] = line.strip()
-                    continue
-                elif re.match(r'\t\t\t\t\t.+$', line):
-                    #subsections[5] = line.strip()
-                    #structure[subsections[0]][subsections[1]][subsections[2]][subsections[3]][subsections[4]] = { line.strip(): {} }
-                    continue
+                    active_session = False
+                structure[subsections[0]]['Connection (' + str(connection_number) + ')'].update(OrderedDict({'Active Session': str(active_session)}))
+            structure[subsections[0]]['Connection (' + str(connection_number) + ')'].update(OrderedDict({str(splitted[0]): str(':'.join(splitted[1:]).split('**')[0]).strip()}))
+        elif subsections[0]=='SYSTEM INFORMATION':
+            splitted = line.split(':')
+            if splitted[0].strip() == 'Environment Variable (PATH)':
+                path = True
+                structure[subsections[0]].update(OrderedDict({'Environment Variable (PATH)': OrderedDict()}))
+            elif splitted[0].strip() == 'Environment Variable (TNS_ADMIN)':
+                path = False
+            if path:
+                structure[subsections[0]]['Environment Variable (PATH)'].update(OrderedDict({path_part: ':'.join(splitted).strip()}))
+                path_part = path_part + 1
+            else:
+                structure[subsections[0]].update(OrderedDict({str(splitted[0]): str(':'.join(splitted[1:])).strip()}))
+        elif subsections[0] == 'ORACLE HOMES DATA':
+            splitted = line.split('=')
+            if line.strip() == '(Oracle Root)':
+                structure[subsections[0]].update(OrderedDict({ '(Oracle Root)' : OrderedDict()}))
+            elif splitted[0].strip() == 'inst_loc':
+                structure[subsections[0]]['(Oracle Root)'].update(OrderedDict({'inst_loc': splitted[1].strip()}))
+            elif len(line.split('-')) == 2:
+                splitted = line.split('-')
+                client_path = 0
+                if len(subsections) > 1:
+                    if subsections[1] == str(splitted[0].strip()).strip():
+                        continue
+                    subsections[1] = str(splitted[0].strip()).strip()
+                else:
+                    subsections.append(str(splitted[0].strip()).strip())
+                    structure[subsections[0]].update(OrderedDict({str(splitted[0].strip()).strip(): OrderedDict({'version': str(splitted[1].strip()).strip()})}))
+            elif len(splitted) == 2:
+                structure[subsections[0]][subsections[1]].update(OrderedDict({str(splitted[0]).strip() : str(splitted[1]).strip()}))
+            else:
+                structure[subsections[0]][subsections[1]].update(OrderedDict({str(client_path): line.strip()}))
+                client_path = client_path + 1
+        elif subsections[0] == 'FORMATTER OPTIONS':
+            if line =='[Qp5FormatterOptions]':
+                structure[subsections[0]].update(OrderedDict({'Qp5FormatterOptions': OrderedDict()}))
+                if len(subsections) > 1:
+                    subsections[1] = 'Qp5FormatterOptions'
+                else:
+                    subsections.append('Qp5FormatterOptions')
+            else:
+                splitted = line.split('=')
+                structure[subsections[0]][subsections[1]].update(OrderedDict({str(splitted[0].strip()): splitted[1].strip()}))
+                #structure[subsections[0]][subsections[1]].update(OrderedDict({str(splitted[0]).strip(): str(splitted[1]).strip()}))
 
-    pprint(structure['TEAM CODING'])
-    '''
+    pprint(structure['ORACLE HOMES DATA'])
+
