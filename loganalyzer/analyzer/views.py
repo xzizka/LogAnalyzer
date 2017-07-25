@@ -213,7 +213,9 @@ def process_SB(file):
             else:
                 splitted = line.split('=')
                 structure[subsections[0]][subsections[1]].update(OrderedDict({str(splitted[0].strip()): splitted[1].strip()}))
-                #structure[subsections[0]][subsections[1]].update(OrderedDict({str(splitted[0]).strip(): str(splitted[1]).strip()}))
+        elif subsections[0] == 'WINDOW USAGE':
+            splitted = line.split('-')
+            structure[subsections[0]].update(OrderedDict({str(splitted[0]).strip(): str(splitted[1]).strip()}))
 
-    pprint(structure['ORACLE HOMES DATA'])
+    pprint(structure['WINDOW USAGE'])
 
