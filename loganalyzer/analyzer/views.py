@@ -34,7 +34,7 @@ def process_SB(file):
     client_path = 0
 
     for line in file.splitlines():
-        if re.match(r'[\*]+$',line) or re.match(r'\ufeff[\*]+$',line) or re.match(r'^$',line):
+        if re.match(r'[\*]+$',line) or re.match(r'\ufeff[\*]+$',line) or re.match(r'^$',line) or re.match(r'^-+$',line):
             continue # removes lines full of stars (delimiters) and empty lines
         elif re.match(r'^\*\*\s.+$', line):
             subsections = []
@@ -216,6 +216,79 @@ def process_SB(file):
         elif subsections[0] == 'WINDOW USAGE':
             splitted = line.split('-')
             structure[subsections[0]].update(OrderedDict({str(splitted[0]).strip(): str(splitted[1]).strip()}))
+        elif subsections[0] == 'Most Recent Error Detail':
+            if re.match('^EurekaLog.+$',line):
+                structure[subsections[0]].update(OrderedDict({'EurekaLog': str(line.split(' ')[1]).strip()}))
+                continue
+            if line.strip() in ('Application:','Exception:','User:','Active Controls:','Computer:', 'Operating System:','Steps to reproduce:',
+                                'Call Stack Information:','Modules Information:','Processes Information:','Assembler Information:','Registers:'):
+                structure[subsections[0]].update(OrderedDict({line[:-1].strip(): OrderedDict()}))
+                if len(subsections) > 1:
+                    subsections[1] = str(line[:-1].strip())
+                else:
+                    subsections.append(str(line[:-1].strip()))
+                continue
+            if line.split(':')[0].strip() == 'Stack' and line.split(':')[1].strip() == 'Memory Dump':
+                structure[subsections[0]].update(OrderedDict({'Stack Memory Dump': OrderedDict()}))
+                if len(subsections) > 1:
+                    subsections[1] = 'Stack Memory Dump'
+                else:
+                    subsections.append('Stack Memory Dump')
+                continue
+            if subsections[1] in ('Application','Exception','User','Active Controls','Computer', 'Operating System','Steps to reproduce'):
+                splitted = line.split(':')
+                structure[subsections[0]][subsections[1]].update(OrderedDict({str(splitted[0]).strip(): str(':'.join(splitted[1:])).strip()}))
+            if subsections[1] == "Call Stack Information":
+                splitted = line.split('|')
+                if splitted[1].strip() == 'Methods' or re.match(r'^-+$',line[1]):
+                    continue
+                if len(line.split('|')) == 3:
+                    structure[subsections[0]][subsections[1]].update(OrderedDict({'Info'+str(len(structure[subsections[0]][subsections[1]])): str(''.join(splitted[1:2])).strip()}))
+                if len(splitted) == 12:
+                    structure[subsections[0]][subsections[1]].update(OrderedDict({'Line'+str(len(structure[subsections[0]][subsections[1]]) - 4):
+                                                                                      ({'Methods': splitted[1].strip()},
+                                                                                                  {'Details': splitted[2].strip()},
+                                                                                                  {'Stack': splitted[3].strip()},
+                                                                                                  {'Address': splitted[4].strip()},
+                                                                                                  {'Module': splitted[5].strip()},
+                                                                                                  {'Offset': splitted[6].strip()},
+                                                                                                  {'Unit': splitted[7].strip()},
+                                                                                                  {'Class': splitted[8].strip()},
+                                                                                                  {'Procedure/Method': splitted[9].strip()},
+                                                                                                  {'Line': splitted[10].strip()}
+                                                                                                  )}))
+            if subsections[1] == "Modules Information":
+                splitted = line.split('|')
+                if splitted[1].strip() == 'Handle':
+                    continue
+                if len(splitted) == 9:
+                    structure[subsections[0]][subsections[1]].update(OrderedDict({'Line'+str(len(structure[subsections[0]][subsections[1]])):
+                                                                                      ({'Handle': splitted[1].strip()},
+                                                                                                  {'Name': splitted[2].strip()},
+                                                                                                  {'Description': splitted[3].strip()},
+                                                                                                  {'Version': splitted[4].strip()},
+                                                                                                  {'Size': splitted[5].strip()},
+                                                                                                  {'Modified': splitted[6].strip()},
+                                                                                                  {'Path': splitted[7].strip()}
+                                                                                                  )}))
+            if subsections[1] == "Processes Information":
+                splitted = line.split('|')
+                if splitted[1].strip() == 'ID':
+                    continue
+                if len(splitted) == 12:
+                    structure[subsections[0]][subsections[1]].update(OrderedDict({'Line'+str(len(structure[subsections[0]][subsections[1]])):
+                                                                                      ({'ID': splitted[1].strip()},
+                                                                                                  {'Name': splitted[2].strip()},
+                                                                                                  {'Description': splitted[3].strip()},
+                                                                                                  {'Version': splitted[4].strip()},
+                                                                                                  {'Memory': splitted[5].strip()},
+                                                                                                  {'Priority': splitted[6].strip()},
+                                                                                                  {'Threads': splitted[7].strip()},
+                                                                                                  {'Path': splitted[7].strip()},
+                                                                                                  {'User': splitted[7].strip()},
+                                                                                                  {'Session': splitted[7].strip()}
+                                                                                                  )}))
 
-    pprint(structure['WINDOW USAGE'])
+
+    pprint(structure['Most Recent Error Detail']['Processes Information'])
 
