@@ -32,6 +32,7 @@ def process_SB(file):
     path_part = 0
     client_name = ''
     client_path = 0
+    assembler_info = ''
 
     for line in file.splitlines():
         if re.match(r'[\*]+$',line) or re.match(r'\ufeff[\*]+$',line) or re.match(r'^$',line) or re.match(r'^-+$',line):
@@ -213,9 +214,6 @@ def process_SB(file):
             else:
                 splitted = line.split('=')
                 structure[subsections[0]][subsections[1]].update(OrderedDict({str(splitted[0].strip()): splitted[1].strip()}))
-        elif subsections[0] == 'WINDOW USAGE':
-            splitted = line.split('-')
-            structure[subsections[0]].update(OrderedDict({str(splitted[0]).strip(): str(splitted[1]).strip()}))
         elif subsections[0] == 'Most Recent Error Detail':
             if re.match('^EurekaLog.+$',line):
                 structure[subsections[0]].update(OrderedDict({'EurekaLog': str(line.split(' ')[1]).strip()}))
@@ -289,6 +287,17 @@ def process_SB(file):
                                                                                                   {'Session': splitted[7].strip()}
                                                                                                   )}))
 
+            if subsections[1] in ("Assembler Information","Registers",'Stack Memory Dump'):
+                assembler_info = assembler_info + line
 
-    pprint(structure['Most Recent Error Detail']['Processes Information'])
+        elif subsections[0] == 'WINDOW USAGE':
+            if assembler_info != '':
+                structure['Most Recent Error Detail']['Assembler Information'].update(OrderedDict({'Stack': assembler_info}))
+                assembler_info = ''
+
+            splitted = line.split('-')
+            structure[subsections[0]].update(OrderedDict({str(splitted[0]).strip(): str(splitted[1]).strip()}))
+
+    pprint(structure)
+
 
