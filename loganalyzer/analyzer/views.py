@@ -159,7 +159,8 @@ def process_SB(file):
             if splitted[0].strip() == 'Oracle Client Version':
                 client_number = client_number + 1
                 structure[subsections[0]].update(OrderedDict({'Oracle Client ('+ str(client_number) +')': OrderedDict()}))
-            structure[subsections[0]]['Oracle Client ('+ str(client_number) +')'].update(OrderedDict({str(splitted[0]): ':'.join(splitted[1:]).strip()}))
+            if len(structure[subsections[0]]) > 0:
+                structure[subsections[0]]['Oracle Client ('+ str(client_number) +')'].update(OrderedDict({str(splitted[0]): ':'.join(splitted[1:]).strip()}))
         elif subsections[0]=='ORACLE SERVER INFORMATION':
             splitted = line.split(':')
             if re.match('^Connection [0-9]+$',splitted[0].strip()):
