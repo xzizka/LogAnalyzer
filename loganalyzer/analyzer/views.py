@@ -170,7 +170,8 @@ def process_SB(file):
                 else:
                     active_session = False
                 structure[subsections[0]]['Connection (' + str(connection_number) + ')'].update(OrderedDict({'Active Session': str(active_session)}))
-            structure[subsections[0]]['Connection (' + str(connection_number) + ')'].update(OrderedDict({str(splitted[0]): str(':'.join(splitted[1:]).split('**')[0]).strip()}))
+            if len(structure[subsections[0]])>0:
+                structure[subsections[0]]['Connection (' + str(connection_number) + ')'].update(OrderedDict({str(splitted[0]): str(':'.join(splitted[1:]).split('**')[0]).strip()}))
         elif subsections[0]=='SYSTEM INFORMATION':
             splitted = line.split(':')
             if splitted[0].strip() == 'Environment Variable (PATH)':
